@@ -39,10 +39,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Free up some disk sapce
-        run: |
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /usr/share/dotnet
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@v1.3.0
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: false
+          swap-storage: true
 
       - name: Test workflow
         uses: snakemake/snakemake-github-action@v1.25.1
