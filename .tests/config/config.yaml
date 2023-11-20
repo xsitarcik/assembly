@@ -1,1 +1,104 @@
-# this config will be used for e2e test
+kraken_dir: "resources/kraken/k2_viral_20230314" # Parent directory with {kraken_db} subdirectory, where DB is located or will be downloaded
+krona_dir: "resources/krona/test_timestamp" # Directory where krona dataset is located or will be downloaded
+
+### HYPERPARAMETERS #############################
+reads__trimming:
+  shorten_to_length: 500 # OPT shorten to this length.
+  max_n_bases: 3 # OPT Discard reads with more than the specified number of bases. The fifth step.
+  max_expected_errors: 3 # OPT - discard reads with more expected errors than this.
+  remove_adapter: "anywhere" # Uses adapters defined in adapters_fasta. Searches for adapters anywhere. Possible values: 'regular', 'front',
+  min_length_r1: 35 # OPT, minimum R1 read length. The fourth step.
+  min_length_r2: 35 # OPT, minimum R2 read length. The fourth step.
+  quality_cutoff_from_5_end_r1: 20 # OPT cutoff on 5' end of R1 read. The second step.
+  quality_cutoff_from_3_end_r1: 20 # OPT cutoff on 3' end of R1 read. The second step.
+  quality_cutoff_from_5_end_r2: 20 # OPT cutoff on 5' end of R2 read. The second step.
+  quality_cutoff_from_3_end_r2: 20 # OPT cutoff on 3' end of R2 read. The second step.
+
+reads__decontamination:
+  exclude_taxa_ids: # list of taxonomy IDs to exclude.
+    - 9606 # Homo Sapiens
+  exclude_children: false # Whether to exclude reads classified at more specific levels than specified taxonomy ID levels.
+  exclude_ancestors: false # Whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels.
+
+kraken__params:
+  save_memory: true # If true, kraken limits RAM memory usage but sacrifices speed.
+
+spades_params:
+    mode: meta # Supported values: standard, meta, plasmid, metaplasmid, metaviral, bio, rna, rnaviral
+    careful: False # Can not be combined with the meta mode. Tries to reduce number of mismatches and short indels, longer runtime.
+
+quast_params:
+    min_contig_length: 500 # Default: 500. Minimum length in bp for contigs to be taken into account.
+    extra: "" # Optional. Default: "". Provide directly arguments for quast. See https://quast.sourceforge.net/docs/manual.html
+    references: [] # Optional. Default: []. Provide paths to references that will be used to compute additional metrics.
+    #  - references/viral/virus1.fa
+    #  - references/viral/virus2.fa
+
+# RESOURCES
+
+max_threads: 2
+max_mem_mb: 6144
+
+resources:
+  trimming_mem_mb: 4096
+  fastqc_mem_mb: 2048
+  spades_mem_mb: 6144
+
+threads:
+  trimming: 1
+  fastqc: 1
+  kraken: 2
+  spades: 2
+  quast: 1
+
+
+# classification:                               # Identify genomic source of sequenced reads
+#     contig_based:                             # Find homologue sequences based on assembled contigs
+#         method: blast                         # Supported values: blast
+#         reference:                            # List of reference genomes to search for homology
+#             nt:                               # Name of reference genome (reference/mhv/mhv.fa)
+#                 query_type: nucleotide        # Nucleotide or protein, according to sequence type in input .fa files
+#                 target_type: nucleotide       # Nucleotide or protein, according to sequence type in blast database
+#                 max_target_seqs: 5           # Number of best hit reference sequences from blast database for each input sequence
+
+# #            rvdb:
+# #                query_type: nucleotide        # Nucleotide or protein, according to sequence type in input .fa files
+# #                target_type: protein          # Nucleotide or protein, according to sequence type in blast database
+# #                max_target_seqs: 5           # Number of best hit reference sequences from blast database for each input sequence
+# #
+# #            refviral:
+# #                query_type: nucleotide        # Nucleotide or protein, according to sequence type in input .fa files
+# #                target_type: nucleotide          # Nucleotide or protein, according to sequence type in blast database
+# #                max_target_seqs: 5            # Number of best hit reference sequences from blast database for each input sequence
+# #
+# #    viral:                                    # Customized methods for identification of viruses
+# #        identification:                       # Identification of contigs with similarity to viral genomes
+# #            method: virfinder                 # Supported values: virfinder
+# #
+#     report:                                   # Summary reports of classification results
+#         summary:                              # Aggregated HTML table with summarized attributes of contigs and homology
+#             method: fasta_summary             # Supported values: fasta_summary
+#             max_query_seqs: 2000              # Maximal number of contigs to report (ordered by their length)
+#             max_target_seqs: 5                # Maximal number of homologues from reference genomes to report
+#             min_query_coverage: 0.01          # Show only hits that have at least this proportion of contig mapped to reference
+#             include:                          # Optional attributes of contigs to report
+# #                - virfinder                   # Probability that contig is from virus
+# #                - coverage                   # Number of aligned reads per contig
+#                 - blast                       # Homologues identified by Blast against specified reference databases
+
+#             html:                             # Attributes applicable only for the HTML report, would NOT be used in the TSV table
+#                 seqs_per_page: 100            # Number of table rows (sequences) per page
+#                 sort_by: 'Sequence'           # Rows would be sorted according to values in this column
+#                 sort_how: 'asc'               # Values would be sorted in desc(ending) or asc(ending) order
+#                 columns:                      # Show only these attributes, in this order
+#                     - Sequence                # Names of contigs with link to fasta files with its sequence
+#                     - Length                  # Number of bases
+#                     - Compress ratio          # Complexity of contig sequence, may be used to filter repetitive sequences
+#                     - Coverage                # Average number of reads covering each base of contig
+# #                    - VirFinder pvalue        # Probability that contig is from viral genome
+#                     - Homologue link          # Reference sequences with homology
+#                     - Mapped reads            # Number of mapped reads to contigs
+
+
+
+

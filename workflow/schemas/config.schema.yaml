@@ -1,1 +1,226 @@
-# schema for the config
+"$schema": http://json-schema.org/draft-06/schema#
+"$ref": "#/definitions/Assembly"
+definitions:
+  Respiratory:
+    type: object
+    additionalProperties: false
+    properties:
+      pepfile:
+        type: string
+        description: "Path to the PEP file containing the info how to load the data"
+        default: "config/pep/config.yaml"
+      max_threads:
+        type: integer
+        description: "Number of maximum threads to use in jobs"
+        default: 1
+        Minimum: 1
+      max_mem_mb:
+        type: integer
+        description: "Maximum memory in megabytes to allocate for any job"
+        Minimum: 2048
+        default: 2048
+      kraken_dir:
+        type: string
+        description: "Directory with the kraken DB files. If does not exist, the workflow tries to download DB by using the basename"
+      krona_dir:
+        type: string
+        description: "Directory where krona dataset is located or will be downloaded"
+      kraken__params:
+        type: object
+        "$ref": "#/definitions/KrakenParams"
+        default: { "save_memory": true }
+      reads__trimming:
+        type: object
+        "$ref": "#/definitions/ReadsTrimming"
+      reads__decontamination:
+        type: object
+        "$ref": "#/definitions/ReadsDecontamination"
+      resources:
+        type: object
+        "$ref": "#/definitions/Resources"
+        default:
+          {
+            "trimming_mem_mb": 2048,
+            "fastqc_mem_mb": 2048,
+          }
+      threads:
+        type: object
+        "$ref": "#/definitions/Threads"
+        default:
+          {
+            "trimming": 1,
+            "fastqc": 1,
+            "kraken": 1,
+          }
+    required:
+      - pepfile
+      - threads
+      - krona_dir
+      - kraken_dir
+      - resources
+    title: Assembly
+  ReadsDecontamination:
+    type: object
+    additionalProperties: false
+    properties:
+      exclude_taxa_ids:
+        type: array
+        description: "list of taxonomy IDs to exclude"
+        items:
+          type: integer
+      exclude_children:
+        type: boolean
+        default: false
+        description: "whether to exclude reads classified at more specific levels than specified taxonomy ID levels"
+      exclude_ancestors:
+        type: boolean
+        default: false
+        description: "whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels"
+    required:
+      - exclude_taxa_ids
+  KrakenParams:
+    type: object
+    additionalProperties: false
+    properties:
+      save_memory:
+        type: boolean
+        description: "if true, kraken limits RAM memory usage but sacrifices speed"
+        default: true
+    title: KrakenParams
+  SpadesParams:
+    type: object
+    additionalProperties: false
+    properties:
+      mode:
+        type: string
+        enum:
+          - "standard"
+          - "meta"
+          - "plasmid"
+          - "metaplasmid"
+          - "metaviral"
+          - "bio"
+          - "rna"
+          - "rnaviral"
+        default: "standard"
+        description: "if true, kraken limits RAM memory usage but sacrifices speed"
+      careful:
+        type: boolean
+        description: "When set to true, spades tries to reduce number of mismatches and short indels, but it has longer runtime."
+        default: false
+    title: KrakenParams
+  ReadsTrimming:
+    type: object
+    additionalProperties: false
+    properties:
+      overlap:
+        type: integer
+        default: 3
+        description: "Minimum number of bases required to overlap with the adapter"
+      error_rate:
+        type: number
+        default: 0.1
+        exclusiveMinimum: 0
+        description: "Error tolerance used when searching for adapter"
+      times:
+        type: integer
+        default: 1
+        description: "How many times to repeat adapter removal"
+      action:
+        type: string
+        enum:
+          - "retain"
+          - "trim"
+          - "mask"
+          - "none"
+          - "lowercase"
+        default: "trim"
+        description: "Defines an action to perform with the found adapter"
+      keep_trimmed_only:
+        type: boolean
+        default: false
+        description: "Optional. Discard reads with no adapters found"
+      shorten_to_length:
+        type: integer
+        description: "Optional. Shorten each read to the specified length. Corresponds to the cutadapt length parameter"
+      cut_from_start:
+        type: integer
+        description: "Optional. Removes a specified number of bases from the beginning of the read"
+      cut_from_end:
+        type: integer
+        description: "Optional. Removes a specified number of bases from the end of the read"
+      max_n_bases:
+        type: integer
+        description: "Optional. Removes reads with more N bases than the specified number"
+      max_expected_errors:
+        type: integer
+        description: "Optional. Discard reads whose expected number of errors exceeds this value"
+      anywhere_adapter:
+        type: string
+        description: "Optional. Path to the adapter file. Search for adapters anywhere in the read"
+      front_adapter:
+        type: string
+        description: "Optional. Path to the adapter file. Search for 5' adapters in the read"
+      regular_adapter:
+        type: string
+        description: "Optional. Path to the adapter file. Search for 3' adapters in the read"
+      max_length_r1:
+        type: integer
+        description: "Optional. Discards R1 reads longer than this"
+      max_length_r2:
+        type: integer
+        description: "Optional. Discards R2 reads longer than this"
+      min_length_r1:
+        type: integer
+        default: 1
+        description: "Discards R1 reads shorter than this. Recommended to set at least to 1, to discard empty reads"
+      min_length_r2:
+        type: integer
+        default: 1
+        description: "Discards R2 reads shorter than this. Recommended to set at least to 1, to discard empty reads"
+      quality_cutoff_from_3_end_r1:
+        type: integer
+        description: "Optional. Removes lower quality bases from the 3' end of the R1 read"
+      quality_cutoff_from_5_end_r1:
+        type: integer
+        description: "Optional. Removes lower quality bases from the 5' end of the R1 read"
+      quality_cutoff_from_3_end_r2:
+        type: integer
+        description: "Optional. Removes lower quality bases from the 3' end of the R2 read"
+      quality_cutoff_from_5_end_r2:
+        type: integer
+        description: "Optional. Removes lower quality bases from the 5' end of the R2 read"
+    title: ReadsTrimming
+  Resources:
+    trimming_mem_mb:
+      type: integer
+      description: "Memory in MB to reserve for trimming"
+    fastqc_mem_mb:
+      type: integer
+      description: "Memory in MB to reserve for fastqc"
+    spades_mem_mb:
+      type: integer
+      description: "Memory in MB to reserve for Spades"
+    title: Resources
+  Threads:
+    trimming:
+      type: integer
+      default: 1
+      description: "Number of threads to use for trimming"
+    fastqc:
+      type: integer
+      default: 1
+      description: "Number of threads to use for fastqc"
+    kraken:
+      type: integer
+      default: 1
+      description: "Number of threads to use for kraken"
+    spades:
+      type: integer
+      default: 1
+      description: "Number of threads to use for Spades"
+    quast:
+      type: integer
+      default: 1
+      description: "Number of threads to use for QUAST"
+    title: Threads
