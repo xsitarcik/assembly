@@ -13,7 +13,6 @@ pepfile: config["pepfile"]
 validate(pep.sample_table, "../schemas/samples.schema.yaml")
 
 
-
 def get_sample_names():
     return list(pep.sample_table["sample_name"].values)
 
@@ -30,6 +29,7 @@ def get_constraints():
     return {
         "sample": "|".join(get_sample_names()),
     }
+
 
 def get_outputs():
     sample_names = get_sample_names()
@@ -140,19 +140,22 @@ def get_kraken_decontamination_params():
         extra.append("--include-parents")
     return " ".join(extra)
 
+
 def get_quast_params():
-    mincontig_param = "--min-contig {val}".format(val=config["quast_params"]["min_contig_length"]))
+    mincontig_param = "--min-contig {val}".format(val=config["quast_params"]["min_contig_length"])
     if config["quast_params"]["extra"]:
         return mincontig_param + " " + config["quast_params"]["extra"]
     return mincontig_param
 
+
 def get_spades_mode():
     if config["spades_params"]["mode"] == "standard":
-        return ''
-    if
-    if '--{}'.format(method_config['mode']) if method_config.get('mode', 'standard') != 'standard' else '',
-meta, plasmid, metaplasmid, metaviral, biosynthetic, rna, rnaviral.
+        return ""
+    return config["spades_params"]["mode"]
+
+
 ### RESOURCES
+
 
 def get_mem_mb_for_trimming(wildcards, attempt):
     return min(config["max_mem_mb"], config["resources"]["trimming_mem_mb"] * attempt)
@@ -164,6 +167,3 @@ def get_mem_mb_for_spades(wildcards, attempt):
 
 def get_mem_mb_for_fastqc(wildcards, attempt):
     return min(config["max_mem_mb"], config["resources"]["fastqc_mem_mb"] * attempt)
-
-
-

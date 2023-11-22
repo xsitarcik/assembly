@@ -38,20 +38,11 @@ definitions:
       resources:
         type: object
         "$ref": "#/definitions/Resources"
-        default:
-          {
-            "trimming_mem_mb": 2048,
-            "fastqc_mem_mb": 2048,
-          }
+        default: { "trimming_mem_mb": 2048, "fastqc_mem_mb": 2048 }
       threads:
         type: object
         "$ref": "#/definitions/Threads"
-        default:
-          {
-            "trimming": 1,
-            "fastqc": 1,
-            "kraken": 1,
-          }
+        default: { "trimming": 1, "fastqc": 1, "kraken": 1 }
     required:
       - pepfile
       - threads

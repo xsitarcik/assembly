@@ -24,15 +24,15 @@ kraken__params:
   save_memory: true # If true, kraken limits RAM memory usage but sacrifices speed.
 
 spades_params:
-    mode: meta # Supported values: standard, meta, plasmid, metaplasmid, metaviral, bio, rna, rnaviral
-    careful: False # Can not be combined with the meta mode. Tries to reduce number of mismatches and short indels, longer runtime.
+  mode: meta # Supported values: standard, meta, plasmid, metaplasmid, metaviral, bio, rna, rnaviral
+  careful: False # Can not be combined with the meta mode. Tries to reduce number of mismatches and short indels, longer runtime.
 
 quast_params:
-    min_contig_length: 500 # Default: 500. Minimum length in bp for contigs to be taken into account.
-    extra: "" # Optional. Default: "". Provide directly arguments for quast. See https://quast.sourceforge.net/docs/manual.html
-    references: [] # Optional. Default: []. Provide paths to references that will be used to compute additional metrics.
-    #  - references/viral/virus1.fa
-    #  - references/viral/virus2.fa
+  min_contig_length: 500 # Default: 500. Minimum length in bp for contigs to be taken into account.
+  extra: "" # Optional. Default: "". Provide directly arguments for quast. See https://quast.sourceforge.net/docs/manual.html
+  references: [] # Optional. Default: []. Provide paths to references that will be used to compute additional metrics.
+  #  - references/viral/virus1.fa
+  #  - references/viral/virus2.fa
 
 # RESOURCES
 
@@ -50,8 +50,6 @@ threads:
   kraken: 2
   spades: 2
   quast: 1
-
-
 # classification:                               # Identify genomic source of sequenced reads
 #     contig_based:                             # Find homologue sequences based on assembled contigs
 #         method: blast                         # Supported values: blast
@@ -98,7 +96,3 @@ threads:
 # #                    - VirFinder pvalue        # Probability that contig is from viral genome
 #                     - Homologue link          # Reference sequences with homology
 #                     - Mapped reads            # Number of mapped reads to contigs
-
-
-
-

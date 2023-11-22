@@ -3,15 +3,14 @@ rule spades__assemble_reads_into_contigs:
         r1="results/reads/deduplicated/{sample}_R1.fastq.gz",
         r2="results/reads/deduplicated/{sample}_R2.fastq.gz",
     output:
-        fastg     = 'results/assembly/{sample}/assembly_graph.fastg',
-        gfa       = 'results/assembly/{sample}/assembly_graph_with_scaffolds.gfa',
-        contigs   = 'results/assembly/{sample}/contigs.fasta',
-        scaffolds = 'results/assembly/{sample}/scaffolds.fasta'
-        tmp_dir = temp(directory('results/assembly/{sample}/corrected/tmp'))
+        fastg="results/assembly/{sample}/assembly_graph.fastg",
+        gfa="results/assembly/{sample}/assembly_graph_with_scaffolds.gfa",
+        contigs="results/assembly/{sample}/contigs.fasta",
+        scaffolds="results/assembly/{sample}/scaffolds.fasta",
     params:
-        outdir    = lambda wildcards, output: os.path.dirname(output.contigs),
-        mode      = get_spades_mode(),
-        careful   = '--careful' if config["spades_params"]["careful"] else '',
+        outdir=lambda wildcards, output: os.path.dirname(output.contigs),
+        mode=get_spades_mode(),
+        careful="--careful" if config["spades_params"]["careful"] else "",
     threads: min(config["threads"]["spades"], config["max_threads"])
     resources:
         mem_mb=get_mem_mb_for_spades,
@@ -25,7 +24,7 @@ rule spades__assemble_reads_into_contigs:
 
 rule quast__evaluate_assembly:
     input:
-        fasta='results/assembly/{sample}/contigs.fasta',
+        fasta="results/assembly/{sample}/contigs.fasta",
     output:
         multiext("results/quast/{sample}/report.", "html", "tex", "txt", "pdf", "tsv"),
         multiext("results/quast/{sample}/transposed_report.", "tex", "txt", "tsv"),
