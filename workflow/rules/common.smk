@@ -139,7 +139,7 @@ def get_quast_params():
 
 
 def get_spades_mode():
-    return "" if config["spades__params"]["mode"] == "standard" else config["spades__params"]["mode"]
+    return "" if config["spades__params"]["mode"] == "standard" else f'--{config["spades__params"]["mode"]}'
 
 
 ### RESOURCES

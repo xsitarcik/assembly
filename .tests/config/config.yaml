@@ -23,7 +23,7 @@ kraken__params:
   save_memory: true # If true, kraken limits RAM memory usage but sacrifices speed.
 
 spades__params:
-  mode: meta # Supported values: standard, meta, plasmid, metaplasmid, metaviral, bio, rna, rnaviral
+  mode: standard # Supported values: standard, meta, plasmid, metaplasmid, metaviral, bio, rna, rnaviral
   careful: False # Can not be combined with the meta mode. Tries to reduce number of mismatches and short indels, longer runtime.
 
 quast__params:
