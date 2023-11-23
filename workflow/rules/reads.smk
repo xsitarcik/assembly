@@ -76,4 +76,4 @@ rule fastuniq__deduplicate_reads:
     log:
         "logs/fastuniq/{sample}.log",
     wrapper:
-        "https://github.com/xsitarcik/wrappers/raw/v1.12.0/wrappers/fastuniq/paired"
+        "https://github.com/xsitarcik/wrappers/raw/v1.12.1/wrappers/fastuniq/paired"
