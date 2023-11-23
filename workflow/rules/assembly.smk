@@ -28,15 +28,7 @@ rule quast__evaluate_assembly:
     output:
         multiext("results/quast/{sample}/report.", "html", "tex", "txt", "pdf", "tsv"),
         multiext("results/quast/{sample}/transposed_report.", "tex", "txt", "tsv"),
-        multiext(
-            "results/quast/{sample}/basic_stats/",
-            "cumulative_plot.pdf",
-            "GC_content_plot.pdf",
-            "gc.icarus.txt",
-            "genome_GC_content_plot.pdf",
-            "NGx_plot.pdf",
-            "Nx_plot.pdf",
-        ),
+        directory("results/quast/{sample}/basic_stats/"),
         "results/quast/{sample}/icarus.html",
         "results/quast/{sample}/icarus_viewers/contig_size_viewer.html",
         "results/quast/{sample}/quast.log",
