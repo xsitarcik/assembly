@@ -1,7 +1,7 @@
 "$schema": http://json-schema.org/draft-06/schema#
 "$ref": "#/definitions/Assembly"
 definitions:
-  Respiratory:
+  Assembly:
     type: object
     additionalProperties: false
     properties:
@@ -29,6 +29,14 @@ definitions:
         type: object
         "$ref": "#/definitions/KrakenParams"
         default: { "save_memory": true }
+      spades__params:
+        type: object
+        "$ref": "#/definitions/SpadesParams"
+        default: { "mode": "standard", "careful": false }
+      quast__params:
+        type: object
+        "$ref": "#/definitions/QuastParams"
+        default: { "min_contig_length": 500, "extra": "" }
       reads__trimming:
         type: object
         "$ref": "#/definitions/ReadsTrimming"
@@ -99,7 +107,20 @@ definitions:
         type: boolean
         description: "When set to true, spades tries to reduce number of mismatches and short indels, but it has longer runtime."
         default: false
-    title: KrakenParams
+    title: SpadesParams
+  QuastParams:
+    type: object
+    additionalProperties: false
+    properties:
+      extra:
+        type: string
+        default: ""
+        description: "Specify any extra parameters for QUAST per manual"
+      min_contig_length:
+        type: integer
+        description: "Minimum length in bp of contigs to evaluate in metrics"
+        default: 500
+    title: QuastParams
   ReadsTrimming:
     type: object
     additionalProperties: false
@@ -202,6 +223,10 @@ definitions:
       type: integer
       default: 1
       description: "Number of threads to use for fastqc"
+    deduplication:
+      type: integer
+      default: 1
+      description: "Number of threads to use for deduplication"
     kraken:
       type: integer
       default: 1

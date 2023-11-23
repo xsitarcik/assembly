@@ -10,7 +10,7 @@ rule spades__assemble_reads_into_contigs:
     params:
         outdir=lambda wildcards, output: os.path.dirname(output.contigs),
         mode=get_spades_mode(),
-        careful="--careful" if config["spades_params"]["careful"] else "",
+        careful="--careful" if config["spades__params"]["careful"] else "",
     threads: min(config["threads"]["spades"], config["max_threads"])
     resources:
         mem_mb=get_mem_mb_for_spades,

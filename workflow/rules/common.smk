@@ -45,22 +45,17 @@ def get_outputs():
     return outputs
 
 
+def infer_read_path(wildcards):
+    if wildcards.step != "original":
+        return "results/reads/{step}/{sample}_{orientation}.fastq.gz"
+    else:
+        if wildcards.orientation == "R1":
+            return get_one_fastq_file(wildcards, read_pair="fq1")[0]
+        elif wildcards.orientation == "R2":
+            return get_one_fastq_file(wildcards, read_pair="fq2")[0]
+
+
 #### COMMON STUFF #################################################################
-
-
-def get_outputs():
-    sample_names = get_sample_names()
-    return {
-        "fastqc_report": expand(
-            "results/reads/{step}/fastqc/{sample}_R{orientation}.html",
-            step=["original", "trimmed", "decontaminated"],
-            sample=sample_names,
-            orientation=[1, 2],
-        ),
-        "bams": expand("results/mapping/deduplicated/{sample}.bam", sample=sample_names),
-        "qualimap": expand("results/mapping/deduplicated/{sample}/bamqc", sample=sample_names),
-        "freyja": expand("results/freyja/{sample}/summary.csv", sample=sample_names),
-    }
 
 
 def get_cutadapt_extra() -> list[str]:
@@ -77,6 +72,12 @@ def get_cutadapt_extra() -> list[str]:
         args_lst.append(f"--max-n {config['reads__trimming']['max_n_bases']}")
     if "max_expected_errors" in config["reads__trimming"]:
         args_lst.append(f"--max-expected-errors {config['reads__trimming']['max_expected_errors']}")
+    if param_value := config["reads__trimming"].get("anywhere_adapter", ""):
+        args_lst.append(f"--anywhere file:{param_value}")
+    if param_value := config["reads__trimming"].get("front_adapter", ""):
+        args_lst.append(f"--front file:{param_value}")
+    if param_value := config["reads__trimming"].get("regular_adapter", ""):
+        args_lst.append(f"--adapter file:{param_value}")
     return args_lst
 
 
@@ -105,30 +106,19 @@ def parse_cutadapt_comma_param(config, param1, param2, arg_name) -> str:
 def get_cutadapt_extra_pe() -> str:
     args_lst = get_cutadapt_extra()
 
-    if parsed_arg := parse_paired_cutadapt_param(config, "max_length_r1", "max_length_r2", "--maximum-length"):
+    cutadapt_config = config["reads__trimming"]
+    if parsed_arg := parse_paired_cutadapt_param(cutadapt_config, "max_length_r1", "max_length_r2", "--maximum-length"):
         args_lst.append(parsed_arg)
-    if parsed_arg := parse_paired_cutadapt_param(config, "min_length_r1", "min_length_r2", "--minimum-length"):
+    if parsed_arg := parse_paired_cutadapt_param(cutadapt_config, "min_length_r1", "min_length_r2", "--minimum-length"):
         args_lst.append(parsed_arg)
     if qual_cut_arg_r1 := parse_cutadapt_comma_param(
-        config, "quality_cutoff_from_3_end_r1", "quality_cutoff_from_5_end_r2", "--quality-cutoff"
+        cutadapt_config, "quality_cutoff_from_3_end_r1", "quality_cutoff_from_5_end_r2", "--quality-cutoff"
     ):
         args_lst.append(qual_cut_arg_r1)
     if qual_cut_arg_r2 := parse_cutadapt_comma_param(
-        config, "quality_cutoff_from_3_end_r1", "quality_cutoff_from_5_end_r2", "-Q"
+        cutadapt_config, "quality_cutoff_from_3_end_r1", "quality_cutoff_from_5_end_r2", "-Q"
     ):
         args_lst.append(qual_cut_arg_r2)
-
-    if param_value := config["reads__trimming"].get("remove_adapter", ""):
-        filepath = config["adapters_fasta"]
-        if not os.path.exists(filepath):
-            raise ValueError(f"Requested adapters not found at {filepath}")
-
-        if param_value == "anywhere":
-            args_lst.append(f"--anywhere file:{filepath} -B file:{filepath}")
-        elif param_value == "front":
-            args_lst.append(f"--front file:{filepath} -G file:{filepath}")
-        elif param_value == "regular":
-            args_lst.append(f"--adapter file:{filepath} -A file:{filepath}")
     return " ".join(args_lst)
 
 
@@ -142,16 +132,14 @@ def get_kraken_decontamination_params():
 
 
 def get_quast_params():
-    mincontig_param = "--min-contig {val}".format(val=config["quast_params"]["min_contig_length"])
-    if config["quast_params"]["extra"]:
-        return mincontig_param + " " + config["quast_params"]["extra"]
+    mincontig_param = "--min-contig {val}".format(val=config["quast__params"]["min_contig_length"])
+    if config["quast__params"]["extra"]:
+        return f'{mincontig_param} {config["quast__params"]["extra"]}'
     return mincontig_param
 
 
 def get_spades_mode():
-    if config["spades_params"]["mode"] == "standard":
-        return ""
-    return config["spades_params"]["mode"]
+    return "" if config["spades__params"]["mode"] == "standard" else config["spades__params"]["mode"]
 
 
 ### RESOURCES
