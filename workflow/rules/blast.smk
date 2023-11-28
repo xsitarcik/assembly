@@ -22,7 +22,7 @@ rule blast__create_header:
     conda:
         "../envs/echo.yaml"
     shell:
-        "echo $HEADER  > {params.header}"
+        "echo {params.header}  > {output.header}"
 
 
 rule blast__query:

@@ -135,7 +135,6 @@ def get_outputs():
     for ref_dict in config["blast__querying"]:
         ref_tag = os.path.basename(os.path.dirname(ref_dict["db_dir"]))
         outputs[f"blast_{ref_tag}"] = expand(f"results/blast/{{sample}}/{ref_tag}.tsv", sample=sample_names)
-    print(outputs)
     return outputs
 
 
