@@ -46,11 +46,31 @@ definitions:
       resources:
         type: object
         "$ref": "#/definitions/Resources"
-        default: { "trimming_mem_mb": 2048, "fastqc_mem_mb": 2048 }
+        default:
+          {
+            "trimming_mem_mb": 2048,
+            "fastqc_mem_mb": 2048,
+            "spades_mem_mb": 2048,
+          }
       threads:
         type: object
         "$ref": "#/definitions/Threads"
-        default: { "trimming": 1, "fastqc": 1, "kraken": 1 }
+        default:
+          {
+            "trimming": 1,
+            "fastqc": 1,
+            "kraken": 1,
+            "deduplication": 1,
+            "spades": 1,
+            "blast": 1,
+            "quast": 1,
+          }
+      blast__querying:
+        type: array
+        items:
+          type: object
+          "$ref": "#/definitions/BlastQueryingObj"
+        default: [{}]
     required:
       - pepfile
       - threads
@@ -58,6 +78,28 @@ definitions:
       - kraken_dir
       - resources
     title: Assembly
+  BlastQueryingObj:
+    type: object
+    additionalProperties: false
+    properties:
+      db_dir:
+        type: string
+        description: "Directory path where Blast DB is located, or where will be downloaded."
+      query_vs_db:
+        type: string
+        enum:
+          - "nucleotide-nucleotide"
+          - "nucleotide-protein"
+          - "protein-protein"
+          - "protein-nucleotide"
+        description: "Type of DB and type of input sequences, used to infer blast binary."
+      max_number_of_hits:
+        type: integer
+        default: 5
+      required:
+        - db_dir
+        - query_vs_db
+    title: BlastQueryingObj
   ReadsDecontamination:
     type: object
     additionalProperties: false
@@ -239,4 +281,8 @@ definitions:
       type: integer
       default: 1
       description: "Number of threads to use for QUAST"
+    blast:
+      type: integer
+      default: 1
+      description: "Number of threads to use for blast"
     title: Threads

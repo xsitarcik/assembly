@@ -13,6 +13,7 @@ include: "rules/common.smk"
 include: "rules/reads.smk"
 include: "rules/kraken.smk"
 include: "rules/assembly.smk"
+include: "rules/blast.smk"
 
 
 wildcard_constraints:

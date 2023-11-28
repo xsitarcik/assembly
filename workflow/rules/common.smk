@@ -25,10 +25,99 @@ def get_fastq_paths(wildcards):
     return pep.sample_table.loc[wildcards.sample][["fq1", "fq2"]]
 
 
+BLAST_TAG_MAPPING_TO_DIR = {
+    os.path.basename(os.path.dirname(ref["db_dir"])): ref["db_dir"] for ref in config["blast__querying"]
+}
+
+for tag in BLAST_TAG_MAPPING_TO_DIR.keys():
+    VALID_TAGS = [
+        "18S_fungal_sequences",
+        "Betacoronavirus",
+        "ref_viroids_rep_genomes",
+        "ref_viruses_rep_genomes",
+        "refseq_select_rna",
+        "refseq_select_prot",
+        "refseq_protein",
+        "refseq_rna",
+        "16S_ribosomal_RNA",
+        "ITS_RefSeq_Fungi",
+        "28S_fungal_sequences",
+        "ITS_eukaryote_sequences",
+        "LSU_eukaryote_rRNA",
+        "LSU_prokaryote_rRNA",
+        "SSU_eukaryote_rRNA",
+        "env_nt",
+        "env_nr",
+        "human_genome",
+        "landmark",
+        "mito",
+        "mouse_genome",
+        "nr",
+        "nt_euk",
+        "nt",
+        "nt_others",
+        "swissprot",
+        "tsa_nr",
+        "tsa_nt",
+        "taxdb",
+        "nt_prok",
+        "nt_viruses",
+        "pataa",
+        "patnt",
+        "pdbaa",
+        "pdbnt",
+        "ref_euk_rep_genomes",
+        "ref_prok_rep_genomes",
+    ]
+    if tag not in VALID_TAGS:
+        raise ValueError(f"{tag=} was inferred as Blast DB tag, which is not valid. {VALID_TAGS=}")
+
+
 def get_constraints():
-    return {
+    constraints = {
         "sample": "|".join(get_sample_names()),
     }
+    if dirs := BLAST_TAG_MAPPING_TO_DIR.values():
+        constraints["blast_db_dir"] = "|".join(dirs)
+    return constraints
+
+
+def infer_read_path(wildcards):
+    if wildcards.step != "original":
+        return "results/reads/{step}/{sample}_{orientation}.fastq.gz"
+    else:
+        if wildcards.orientation == "R1":
+            return get_one_fastq_file(wildcards, read_pair="fq1")[0]
+        elif wildcards.orientation == "R2":
+            return get_one_fastq_file(wildcards, read_pair="fq2")[0]
+
+
+BLAST_HEADER = "qseqid sacc staxid ssciname scomname sblastname sskingdom stitle pident evalue length mismatch gapopen qstart qend sstart send qlen slen"
+
+blast_binaries = {
+    "nucleotide-nucleotide": "blastn",
+    "nucleotide-protein": "blastx",
+    "protein-nucleotide": "tblastn",
+    "protein-protein": "blastp",
+}
+
+
+def get_blast_config(reference_tag: str):
+    for ref in config["blast__querying"]:
+        if BLAST_TAG_MAPPING_TO_DIR[reference_tag] == ref["db_dir"]:
+            return ref
+
+
+def infer_blast_binary(wildcards):
+    return blast_binaries[get_blast_config(wildcards.reference_tag)["query_vs_db"]]
+
+
+def infer_md5_hash(wildcards):
+    return os.path.join(BLAST_TAG_MAPPING_TO_DIR[wildcards.reference_tag], f"{wildcards.reference_tag}.tar.gz.md5")
+
+
+def infer_max_number_of_hits(wildcards):
+    return get_blast_config(wildcards.reference_tag)["max_number_of_hits"]
 
 
 def get_outputs():
@@ -42,17 +131,12 @@ def get_outputs():
         "kronas": expand("results/kraken/kronas/{sample}.html", sample=sample_names),
         "quast": expand("results/quast/{sample}/report.html", sample=sample_names),
     }
+
+    for ref_dict in config["blast__querying"]:
+        ref_tag = os.path.basename(os.path.dirname(ref_dict["db_dir"]))
+        outputs[f"blast_{ref_tag}"] = expand(f"results/blast/{{sample}}/{ref_tag}.tsv", sample=sample_names)
+    print(outputs)
     return outputs
-
-
-def infer_read_path(wildcards):
-    if wildcards.step != "original":
-        return "results/reads/{step}/{sample}_{orientation}.fastq.gz"
-    else:
-        if wildcards.orientation == "R1":
-            return get_one_fastq_file(wildcards, read_pair="fq1")[0]
-        elif wildcards.orientation == "R2":
-            return get_one_fastq_file(wildcards, read_pair="fq2")[0]
 
 
 #### COMMON STUFF #################################################################

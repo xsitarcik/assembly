@@ -30,6 +30,15 @@ quast__params:
   min_contig_length: 500 # Default: 500. Minimum length in bp for contigs to be taken into account.
   extra: "" # Optional. Default: "". Provide directly arguments for quast. See https://quast.sourceforge.net/docs/manual.html
 
+blast__querying: # Here provide multiple dicts, one for each reference.
+  # Use Blast DB tag, allowed: "18S_fungal_sequences" "Betacoronavirus" "ref_viroids_rep_genomes" "ref_viruses_rep_genomes" "refseq_select_rna" "refseq_select_prot" "refseq_protein" "refseq_rna" "16S_ribosomal_RNA" "ITS_RefSeq_Fungi" "28S_fungal_sequences" "ITS_eukaryote_sequences" "LSU_eukaryote_rRNA" "LSU_prokaryote_rRNA" "SSU_eukaryote_rRNA" "env_nt" "env_nr" "human_genome" "landmark" "mito" "mouse_genome" "nr" "nt_euk" "nt" "nt_others" "swissprot" "tsa_nr" "tsa_nt" "taxdb" "nt_prok" "nt_viruses" "pataa" "patnt" "pdbaa" "pdbnt" "ref_euk_rep_genomes" "ref_prok_rep_genomes".
+  - db_dir: "/data/genome/blast/18S_fungal_sequences/23-12-12" # where the DB is located or where it will be downloaded.
+    query_vs_db: "nucleotide-nucleotide" # Type of query vs input sequence. Allowed: "nucleotide-nucleotide", "nucleotide-protein", "protein-protein", "protein-nucleotide".
+    max_number_of_hits: 5 # Maximum number of best hits when blast querying an input sequence (default: 5).
+  - db_dir: "/data/genome/blast/16S_ribosomal_RNA/23-12-12" # where the DB is located or where it will be downloaded.
+    query_vs_db: "nucleotide-nucleotide" # Type of query vs input sequence. Allowed: "nucleotide-nucleotide", "nucleotide-protein", "protein-protein", "protein-nucleotide".
+    max_number_of_hits: 5 # Maximum number of best hits when blast querying an input sequence (default: 5).
+
 # RESOURCES
 
 max_threads: 2
@@ -47,6 +56,7 @@ threads:
   spades: 2
   quast: 1
   deduplication: 1
+  blast: 1
 # classification:                               # Identify genomic source of sequenced reads
 #     contig_based:                             # Find homologue sequences based on assembled contigs
 #         method: blast                         # Supported values: blast
