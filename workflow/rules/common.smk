@@ -112,8 +112,9 @@ def infer_blast_binary(wildcards):
     return blast_binaries[get_blast_config(wildcards.reference_tag)["query_vs_db"]]
 
 
-def infer_md5_hash(wildcards):
-    return os.path.join(BLAST_TAG_MAPPING_TO_DIR[wildcards.reference_tag], f"{wildcards.reference_tag}.tar.gz.md5")
+def infer_blast_dir(wildcards):
+    blast_type = get_blast_config(wildcards.reference_tag)["query_vs_db"].split("-")[1][0]
+    return os.path.join(BLAST_TAG_MAPPING_TO_DIR[wildcards.reference_tag], f"{wildcards.reference_tag}.{blast_type}db")
 
 
 def infer_max_number_of_hits(wildcards):
