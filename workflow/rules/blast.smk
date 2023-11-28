@@ -9,7 +9,7 @@ rule blast__download_database:
     conda:
         "../envs/blast.yaml"
     shell:
-        "(makedirs -p {params.blast_db_dir} && cd {params.blast_db_dir} && update_blastdb.pl --decompress {wildcards.reference_tag}) > {log} 2>&1"
+        "(mkdir -p {params.blast_db_dir} && cd {params.blast_db_dir} && update_blastdb.pl --decompress {wildcards.reference_tag}) > {log} 2>&1"
 
 
 rule blast__create_header:
