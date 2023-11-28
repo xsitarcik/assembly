@@ -60,7 +60,6 @@ rule kraken__krona_chart:
             category="{sample}",
             labels={
                 "Type": "Krona",
-                "Reference": "-",
             },
         ),
     params:

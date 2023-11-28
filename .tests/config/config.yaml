@@ -35,9 +35,6 @@ blast__querying: # Here provide multiple dicts, one for each reference.
   - db_dir: "/data/genome/blast/18S_fungal_sequences/23-12-12" # where the DB is located or where it will be downloaded.
     query_vs_db: "nucleotide-nucleotide" # Type of query vs input sequence. Allowed: "nucleotide-nucleotide", "nucleotide-protein", "protein-protein", "protein-nucleotide".
     max_number_of_hits: 5 # Maximum number of best hits when blast querying an input sequence (default: 5).
-  - db_dir: "/data/genome/blast/16S_ribosomal_RNA/23-12-12" # where the DB is located or where it will be downloaded.
-    query_vs_db: "nucleotide-nucleotide" # Type of query vs input sequence. Allowed: "nucleotide-nucleotide", "nucleotide-protein", "protein-protein", "protein-nucleotide".
-    max_number_of_hits: 5 # Maximum number of best hits when blast querying an input sequence (default: 5).
 
 # RESOURCES
 
