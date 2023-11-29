@@ -51,6 +51,7 @@ definitions:
             "trimming_mem_mb": 2048,
             "fastqc_mem_mb": 2048,
             "spades_mem_mb": 2048,
+            "blast_mem_mb": 2048,
           }
       threads:
         type: object
@@ -255,6 +256,9 @@ definitions:
     spades_mem_mb:
       type: integer
       description: "Memory in MB to reserve for Spades"
+    blast_mem_mb:
+      type: integer
+      description: "Memory in MB to reserve for BLAST"
     title: Resources
   Threads:
     trimming:

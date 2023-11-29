@@ -25,9 +25,11 @@ def get_fastq_paths(wildcards):
     return pep.sample_table.loc[wildcards.sample][["fq1", "fq2"]]
 
 
-BLAST_TAG_MAPPING_TO_DIR = {
-    os.path.basename(os.path.dirname(ref["db_dir"])): ref["db_dir"] for ref in config["blast__querying"]
-}
+def parse_blast_tag(path: str):
+    return os.path.basename(os.path.dirname(os.path.realpath(path)))
+
+
+BLAST_TAG_MAPPING_TO_DIR = {parse_blast_tag(ref["db_dir"]): ref["db_dir"] for ref in config["blast__querying"]}
 
 for tag in BLAST_TAG_MAPPING_TO_DIR.keys():
     VALID_TAGS = [
@@ -92,7 +94,7 @@ def infer_read_path(wildcards):
             return get_one_fastq_file(wildcards, read_pair="fq2")[0]
 
 
-BLAST_HEADER = "qseqid sacc staxid ssciname scomname sblastname sskingdom stitle pident evalue length mismatch gapopen qstart qend sstart send qlen slen"
+BLAST_HEADER = "qseqid sacc staxid sscinames sscinames scomnames stitle pident evalue length mismatch gapopen qstart qend sstart send qlen slen"
 
 blast_binaries = {
     "nucleotide-nucleotide": "blastn",
@@ -114,7 +116,16 @@ def infer_blast_binary(wildcards):
 
 def infer_blast_db(wildcards):
     blast_type = get_blast_config(wildcards.reference_tag)["query_vs_db"].split("-")[1][0]
-    return os.path.join(BLAST_TAG_MAPPING_TO_DIR[wildcards.reference_tag], f"{wildcards.reference_tag}.{blast_type}db")
+    return multiext(
+        os.path.join(BLAST_TAG_MAPPING_TO_DIR[wildcards.reference_tag], f"{wildcards.reference_tag}.{blast_type}"),
+        "db",
+        "hr",
+        "in",
+        "ot",
+        "sq",
+        "tf",
+        "to",
+    )
 
 
 def infer_max_number_of_hits(wildcards):
@@ -239,3 +250,7 @@ def get_mem_mb_for_spades(wildcards, attempt):
 
 def get_mem_mb_for_fastqc(wildcards, attempt):
     return min(config["max_mem_mb"], config["resources"]["fastqc_mem_mb"] * attempt)
+
+
+def get_mem_mb_for_blast(wildcards, attempt):
+    return min(config["max_mem_mb"], config["resources"]["blast_mem_mb"] * attempt)

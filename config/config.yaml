@@ -1,5 +1,5 @@
 kraken_dir: "/data/genome/metagenome/kraken/{KRAKEN_TAG}" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname.
-krona_dir: "/data/genome/taxonomy/krona/{TIMESTAMP-YYYY-MM-DD}" # Directory where krona dataset is located or will be downloaded.
+krona_dir: "/data/genome/taxonomy/krona/{TIMESTAMP}" # Directory where krona dataset is located or will be downloaded.
 
 ### HYPERPARAMETERS #############################
 reads__trimming:
@@ -32,7 +32,7 @@ quast__params:
 
 blast__querying: # Here provide multiple dicts, one for each reference.
   # Use Blast DB tag, allowed: "18S_fungal_sequences" "Betacoronavirus" "ref_viroids_rep_genomes" "ref_viruses_rep_genomes" "refseq_select_rna" "refseq_select_prot" "refseq_protein" "refseq_rna" "16S_ribosomal_RNA" "ITS_RefSeq_Fungi" "28S_fungal_sequences" "ITS_eukaryote_sequences" "LSU_eukaryote_rRNA" "LSU_prokaryote_rRNA" "SSU_eukaryote_rRNA" "env_nt" "env_nr" "human_genome" "landmark" "mito" "mouse_genome" "nr" "nt_euk" "nt" "nt_others" "swissprot" "tsa_nr" "tsa_nt" "taxdb" "nt_prok" "nt_viruses" "pataa" "patnt" "pdbaa" "pdbnt" "ref_euk_rep_genomes" "ref_prok_rep_genomes".
-  - db_dir: "/data/genome/blast/{BLAST_DB_TAG}/{TIMESTAMP}/" # where the DB is located or where it will be downloaded.
+  - db_dir: "/data/genome/metagenome/blast/{BLAST_DB_TAG}/{TIMESTAMP}" # where the DB is located or where it will be downloaded.
     query_vs_db: "nucleotide-nucleotide" # Type of query vs DB sequence (Searching nucleotide in nucleotide DB). Allowed: "nucleotide-nucleotide", "nucleotide-protein", "protein-protein", "protein-nucleotide".
     max_number_of_hits: 5 # Maximum number of best hits when blast querying an input sequence (default: 5).
 
@@ -45,6 +45,7 @@ resources:
   trimming_mem_mb: 4096
   fastqc_mem_mb: 2048
   spades_mem_mb: 128000
+  blast_mem_mb: 32000
 
 threads:
   trimming: 4
@@ -53,7 +54,7 @@ threads:
   kraken: 8
   spades: 16
   quast: 4
-  blast: 4
+  blast: 8
 #     report:                                   # Summary reports of classification results
 #         summary:                              # Aggregated HTML table with summarized attributes of contigs and homology
 #             method: fasta_summary             # Supported values: fasta_summary
