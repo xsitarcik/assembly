@@ -45,6 +45,7 @@ resources:
   trimming_mem_mb: 4096
   fastqc_mem_mb: 2048
   spades_mem_mb: 6144
+  blast_mem_mb: 2048
 
 threads:
   trimming: 1

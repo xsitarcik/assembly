@@ -250,15 +250,19 @@ definitions:
     trimming_mem_mb:
       type: integer
       description: "Memory in MB to reserve for trimming"
+      default: 2048
     fastqc_mem_mb:
       type: integer
       description: "Memory in MB to reserve for fastqc"
+      default: 2048
     spades_mem_mb:
       type: integer
       description: "Memory in MB to reserve for Spades"
+      default: 2048
     blast_mem_mb:
       type: integer
       description: "Memory in MB to reserve for BLAST"
+      default: 2048
     title: Resources
   Threads:
     trimming:
