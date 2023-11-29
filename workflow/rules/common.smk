@@ -112,7 +112,7 @@ def infer_blast_binary(wildcards):
     return blast_binaries[get_blast_config(wildcards.reference_tag)["query_vs_db"]]
 
 
-def infer_blast_dir(wildcards):
+def infer_blast_db(wildcards):
     blast_type = get_blast_config(wildcards.reference_tag)["query_vs_db"].split("-")[1][0]
     return os.path.join(BLAST_TAG_MAPPING_TO_DIR[wildcards.reference_tag], f"{wildcards.reference_tag}.{blast_type}db")
 
