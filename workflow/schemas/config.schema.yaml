@@ -71,7 +71,7 @@ definitions:
         items:
           type: object
           "$ref": "#/definitions/BlastQueryingObj"
-        default: [{}]
+        default: []
     required:
       - pepfile
       - threads
