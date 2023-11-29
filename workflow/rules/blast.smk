@@ -46,7 +46,7 @@ rule blast__query:
         tsv="results/blast/{sample}/{reference_tag}.tsv",
         tsv_headerless=temp("results/blast/{sample}/{reference_tag}.tsv.tmp"),
     params:
-        blast_db_dir=lambda wildcards, output: os.path.dirname(output.blast_db[0]),
+        blast_db_dir=lambda wildcards, output: os.path.dirname(input.blast_db[0]),
         binary=infer_blast_binary,
         blast_format="6 {header}".format(header=BLAST_HEADER),
         max_number_of_hits=infer_max_number_of_hits,
