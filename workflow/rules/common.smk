@@ -137,7 +137,7 @@ def infer_max_number_of_hits(wildcards):
 def get_all_blast_results(wildcards):
     return expand(
         f"results/summary_report/{wildcards.sample}/annotation/attributes/blast/{{reference_tag}}.blast.tsv",
-        reference_tags=BLAST_TAG_MAPPING_TO_DIR.keys(),
+        reference_tag=BLAST_TAG_MAPPING_TO_DIR.keys(),
     )
 
 
