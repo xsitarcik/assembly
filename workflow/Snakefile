@@ -14,6 +14,7 @@ include: "rules/reads.smk"
 include: "rules/kraken.smk"
 include: "rules/assembly.smk"
 include: "rules/blast.smk"
+include: "rules/blast_report.smk"
 
 
 wildcard_constraints:

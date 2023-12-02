@@ -151,10 +151,12 @@ def get_outputs():
         ),
         "kronas": expand("results/kraken/kronas/{sample}.html", sample=sample_names),
         "quast": expand("results/quast/{sample}/report.html", sample=sample_names),
+        "reports": expand("results/summary_report/{sample}/summary.html", sample=sample_names),
     }
 
     for ref_tag in BLAST_TAG_MAPPING_TO_DIR.keys():
         outputs[f"blast_{ref_tag}"] = expand(f"results/blast/{{sample}}/{ref_tag}.tsv", sample=sample_names)
+
     return outputs
 
 

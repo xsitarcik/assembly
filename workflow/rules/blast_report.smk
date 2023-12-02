@@ -23,7 +23,7 @@ rule custom__summary_blast:
         min_query_coverage=config["blast__report"]["min_query_coverage"],
         max_target_seqs=config["blast__report"]["max_target_seqs"],
     log:
-        "logs/custom/summary_blast/{sample}.log",
+        "logs/custom/summary_blast/{sample}_{reference_tag}.log",
     conda:
         "../envs/blast_report.yaml"
     script:
