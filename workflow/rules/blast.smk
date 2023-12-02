@@ -5,10 +5,7 @@ rule blast__download_database:
             multiext(
                 "{blast_db_dir}/{reference_tag}.{type}",
                 "db",
-                "hr",
-                "in",
                 "ot",
-                "sq",
                 "tf",
                 "to",
             )
@@ -40,6 +37,7 @@ rule blast__create_header:
 rule blast__query:
     input:
         blast_db=infer_blast_db,
+        tax_db=infer_tax_db,
         contigs="results/assembly/{sample}/contigs.fasta",
         header="results/blast/header.tsv",
     output:

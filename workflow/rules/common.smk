@@ -119,17 +119,26 @@ def infer_blast_db(wildcards):
     return multiext(
         os.path.join(BLAST_TAG_MAPPING_TO_DIR[wildcards.reference_tag], f"{wildcards.reference_tag}.{blast_type}"),
         "db",
-        "hr",
-        "in",
         "ot",
-        "sq",
         "tf",
         "to",
     )
 
 
+def infer_tax_db(wildcards):
+    blast_type = get_blast_config(wildcards.reference_tag)["query_vs_db"].split("-")[1][0]
+    return multiext(os.path.join(BLAST_TAG_MAPPING_TO_DIR[wildcards.reference_tag], "taxdb"), ".bti", ".btd")
+
+
 def infer_max_number_of_hits(wildcards):
     return get_blast_config(wildcards.reference_tag)["max_number_of_hits"]
+
+
+def get_all_blast_results(wildcards):
+    return expand(
+        f"results/summary_report/{wildcards.sample}/annotation/attributes/blast/{{reference_tag}}.blast.tsv",
+        reference_tags=BLAST_TAG_MAPPING_TO_DIR.keys(),
+    )
 
 
 def get_outputs():
@@ -144,8 +153,7 @@ def get_outputs():
         "quast": expand("results/quast/{sample}/report.html", sample=sample_names),
     }
 
-    for ref_dict in config["blast__querying"]:
-        ref_tag = os.path.basename(os.path.dirname(ref_dict["db_dir"]))
+    for ref_tag in BLAST_TAG_MAPPING_TO_DIR.keys():
         outputs[f"blast_{ref_tag}"] = expand(f"results/blast/{{sample}}/{ref_tag}.tsv", sample=sample_names)
     return outputs
 

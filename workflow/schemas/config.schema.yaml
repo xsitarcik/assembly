@@ -37,6 +37,16 @@ definitions:
         type: object
         "$ref": "#/definitions/QuastParams"
         default: { "min_contig_length": 500, "extra": "" }
+      blast__report:
+        type: object
+        "$ref": "#/definitions/BlastReportParams"
+        default:
+          {
+            "max_query_seqs": 2000,
+            "max_target_seqs": 5,
+            "min_query_coverage": 0.01,
+            "seqs_per_page": 100,
+          }
       reads__trimming:
         type: object
         "$ref": "#/definitions/ReadsTrimming"
@@ -164,6 +174,32 @@ definitions:
         description: "Minimum length in bp of contigs to evaluate in metrics"
         default: 500
     title: QuastParams
+  BlastReportParams:
+    type: object
+    additionalProperties: false
+    properties:
+      max_query_seqs:
+        type: integer
+        default: 2000
+        Minimum: 1
+        description: "Maximal number of contigs to report, ordered by their length."
+      max_target_seqs:
+        type: integer
+        Minimum: 1
+        default: 5
+        description: "Maximal number of homologues from reference genomes to report."
+      min_query_coverage:
+        type: number
+        Minimum: 0
+        Maximum: 1
+        default: 0.01
+        description: "Show only hits that have at least this proportion of contig mapped to reference."
+      seqs_per_page:
+        type: integer
+        Minimum: 1
+        default: 100
+        description: "Number of table rows (sequences) per page."
+    title: BlastReportParams
   ReadsTrimming:
     type: object
     additionalProperties: false

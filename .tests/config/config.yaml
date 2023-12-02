@@ -36,6 +36,12 @@ blast__querying: # Here provide multiple dicts, one for each reference.
     query_vs_db: "nucleotide-nucleotide" # Type of query vs DB sequence. Allowed: "nucleotide-nucleotide", "nucleotide-protein", "protein-protein", "protein-nucleotide".
     max_number_of_hits: 5 # Maximum number of best hits when blast querying an input sequence (default: 5).
 
+blast__report: # Summary reports of classification results
+  max_query_seqs: 2000 # Maximal number of contigs to report, ordered by their length (default: 2000).
+  max_target_seqs: 5 # Maximal number of homologues from reference genomes to report (default: 5).
+  min_query_coverage: 0.01 # Show only hits that have at least this proportion of contig mapped to reference (default: 0.01).
+  seqs_per_page: 100 # Number of table rows (sequences) per page (default: 100)
+
 # RESOURCES
 
 max_threads: 2
