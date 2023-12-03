@@ -140,7 +140,8 @@ def get_outputs():
     sample_names = get_sample_names()
     outputs = {
         "fastqc_report": expand(
-            "results/reads/deduplicated/fastqc/{sample}_R{orientation}.html",
+            "results/reads/{steps}/fastqc/{sample}_R{orientation}.html",
+            steps=["original", "trimmed", "decontaminated", "deduplicated"],
             sample=sample_names,
             orientation=[1, 2],
         ),

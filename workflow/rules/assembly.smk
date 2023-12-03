@@ -26,12 +26,17 @@ rule quast__evaluate_assembly:
     input:
         fasta="results/assembly/{sample}/contigs.fasta",
     output:
-        multiext("results/quast/{sample}/report.", "html", "tex", "txt", "pdf", "tsv"),
-        multiext("results/quast/{sample}/transposed_report.", "tex", "txt", "tsv"),
-        directory("results/quast/{sample}/basic_stats/"),
-        "results/quast/{sample}/icarus.html",
-        "results/quast/{sample}/icarus_viewers/contig_size_viewer.html",
-        "results/quast/{sample}/quast.log",
+        pdf=report(
+            "results/quast/{sample}/report.pdf",
+            category="{sample}",
+            labels={"Type": "QUAST"},
+        ),
+        basic_reports=multiext("results/quast/{sample}/report.", "html", "tex", "txt", "tsv"),
+        transposed=multiext("results/quast/{sample}/transposed_report.", "tex", "txt", "tsv"),
+        basic_stats=directory("results/quast/{sample}/basic_stats/"),
+        icarus="results/quast/{sample}/icarus.html",
+        viewer="results/quast/{sample}/icarus_viewers/contig_size_viewer.html",
+        log="results/quast/{sample}/quast.log",
     log:
         "logs/quast/{sample}.log",
     threads: min(config["threads"]["quast"], config["max_threads"])

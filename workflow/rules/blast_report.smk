@@ -37,7 +37,13 @@ rule custom__summary_html:
         attrs_seqinfo="results/summary_report/{sample}/annotation/attributes/seqinfo.fa",
         attrs_blast=get_all_blast_results,
     output:
-        html="results/summary_report/{sample}/summary.html",
+        html=report(
+            "results/summary_report/{sample}/summary.html",
+            category="{sample}",
+            labels={
+                "Type": "Blast report",
+            },
+        ),
         tsv="results/summary_report/{sample}/summary.html.tsv",
     params:
         fasta=lambda wildcards, input: os.path.join(input.fasta_dir, "all_contigs.fa"),
