@@ -32,7 +32,7 @@ rule custom__summary_blast:
 
 rule custom__summary_html:
     input:
-        template="workflow/resources/abundances.html",
+        template=os.path.join(workflow.basedir, "resources", "abundances.html"),
         fasta_dir="results/summary_report/{sample}/annotation/sequences/",
         attrs_seqinfo="results/summary_report/{sample}/annotation/attributes/seqinfo.fa",
         attrs_blast=get_all_blast_results,
