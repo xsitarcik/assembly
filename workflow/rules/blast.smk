@@ -31,7 +31,7 @@ rule blast__create_header:
     conda:
         "../envs/echo.yaml"
     shell:
-        "echo {params.header}  > {output.header}"
+        "echo -e {params.header:q}  > {output.header}"
 
 
 rule blast__query:
