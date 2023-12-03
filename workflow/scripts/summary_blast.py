@@ -27,7 +27,7 @@ def summary_blast(
             return '%3.2f%% - <a href="https://www.ncbi.nlm.nih.gov/nuccore/%s", title="%s">%s</a>' % (
                 align["qcov"] * 100,
                 align["sacc"],
-                align["taxonomy"],
+                align["sscinames"],
                 align["stitle"],
             )
 

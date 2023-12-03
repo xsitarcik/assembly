@@ -94,7 +94,7 @@ def infer_read_path(wildcards):
             return get_one_fastq_file(wildcards, read_pair="fq2")[0]
 
 
-BLAST_HEADER = "qseqid sacc staxid sscinames sscinames scomnames stitle pident evalue length mismatch gapopen qstart qend sstart send qlen slen"
+BLAST_HEADER = "qseqid sacc staxid sscinames scomnames stitle pident evalue length mismatch gapopen qstart qend sstart send qlen slen"
 
 blast_binaries = {
     "nucleotide-nucleotide": "blastn",
@@ -123,11 +123,6 @@ def infer_blast_db(wildcards):
         "tf",
         "to",
     )
-
-
-def infer_tax_db(wildcards):
-    blast_type = get_blast_config(wildcards.reference_tag)["query_vs_db"].split("-")[1][0]
-    return multiext(os.path.join(BLAST_TAG_MAPPING_TO_DIR[wildcards.reference_tag], "taxdb"), ".bti", ".btd")
 
 
 def infer_max_number_of_hits(wildcards):
