@@ -7,7 +7,7 @@ reads: # Specify the order and methods for each read processing step. If no meth
 
 assembly:
   assembly: ["spades"] # Assembly method - Allowed: "spades.
-  report: ["bandage", "quast"] # OPT - Assembly QC report method - Allowed: "bandage", "quast" or empty list. -
+  report: ["quast"] # OPT - Assembly QC report method - Allowed: "bandage", "quast" or empty list. -
   classification: ["blast"] # OPT - Contig classification method - Allowed: "blast" or empty list.
 
 ### HYPERPARAMETERS #############################
