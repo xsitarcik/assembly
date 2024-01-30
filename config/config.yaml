@@ -1,42 +1,77 @@
-kraken_dir: "/data/genome/metagenome/kraken/{KRAKEN_TAG}" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname.
-krona_dir: "/data/genome/taxonomy/krona/{TIMESTAMP}" # Directory where krona dataset is located or will be downloaded.
+reads: # Specify the order and methods for each read processing step. If no method is specified, the step will not be performed.
+  subsampling: "seqtk" # OPT - specify method of subsampling. Allowed: "seqtk", "null".
+  trimming: "cutadapt" # OPT - specify method of trimming. Allowed: "cutadapt", "null".
+  decontamination: "kraken" # OPT - specify method of decontamination. Allowed: "kraken", "null".
+  deduplication: "fastuniq" # OPT - specify method of deduplication. Allowed: "fastuniq", "null".
+  _generate_fastqc_for: ["deduplication"] # OPT - specify which steps to generate fastqc for. Allowed: "original"."subsampling", "trimming", "decontamination", "deduplication" or empty list (default: empty list).
+
+assembly:
+  assembly: ["spades"] # Assembly method - Allowed: "spades.
+  report: ["bandage", "quast"] # OPT - Assembly QC report method - Allowed: "bandage", "quast" or empty list. -
+  classification: ["blast"] # OPT - Contig classification method - Allowed: "blast" or empty list.
 
 ### HYPERPARAMETERS #############################
-reads__trimming:
-  shorten_to_length: 500 # OPT shorten to this length.
-  max_n_bases: 3 # OPT Discard reads with more than the specified number of bases. The fifth step.
-  max_expected_errors: 3 # OPT - discard reads with more expected errors than this.
-  min_length_r1: 35 # OPT, minimum R1 read length. The fourth step.
-  min_length_r2: 35 # OPT, minimum R2 read length. The fourth step.
-  quality_cutoff_from_5_end_r1: 20 # OPT cutoff on 5' end of R1 read. The second step.
-  quality_cutoff_from_3_end_r1: 20 # OPT cutoff on 3' end of R1 read. The second step.
-  quality_cutoff_from_5_end_r2: 20 # OPT cutoff on 5' end of R2 read. The second step.
-  quality_cutoff_from_3_end_r2: 20 # OPT cutoff on 3' end of R2 read. The second step.
+reads__subsampling__seqtk:
+  seed: 1
+  n_reads: 1
+  reduce_memory: true
 
-reads__decontamination:
+reads__trimming__cutadapt:
+  # 1st stage - trimming
+  cut_from_start_r1: null # OPT - removes a specified number of bases from the beginning of the R1 read.
+  cut_from_start_r2: null # OPT - removes a specified number of bases from the beginning of the R2 read.
+  cut_from_end_r1: null # OPT - removes a specified number of bases from the end of the R1 read.
+  cut_from_end_r2: null # OPT - removes a specified number of bases from the end of the R2 read.
+  quality_cutoff_from_5_end_r1: 20 # cutoff on 5' end of R1 read. The second step.
+  quality_cutoff_from_3_end_r1: 20 # cutoff on 3' end of R1 read. The second step.
+  quality_cutoff_from_5_end_r2: 20 # cutoff on 5' end of R2 read. The second step.
+  quality_cutoff_from_3_end_r2: 20 # cutoff on 3' end of R2 read. The second step.
+
+  # 2nd stage - Adapter removal
+  adapter_removal: # OPT - set "do" to false to skip this step.
+    do: true # If true, all below options are required. Else, they are ignored/can be deleted.
+    adapters_fasta: "data/adapters/{ADAPTERS.FASTA}"
+    action: "trim" # Defines an action to perform with the found adapter.
+    overlap: 3 # Minimum number of bases required to overlap with the adapter (default: 3).
+    read_location: "anywhere" # Uses adapters defined in adapters_fasta. Searches for adapters anywhere. Possible values: 'regular', 'front' and "anywhere" (default: "anywhere").
+    error_rate: 0.1 # Error tolerance used when searching for adapter (default: 0.1).
+    times: 1 # How many times to do adapter removal (default: 1).
+    keep_trimmed_only: false # Discard reads with no adapters found (default: false).
+
+  # 3rd stage - post adapter trimming
+  shorten_to_length: null # OPT - both R1 and R2 are shortened to this length.
+  trim_N_bases_on_ends: null # OPT - trim flanking N's on both read ends.
+
+  # 4th stage - Filtering
+  min_length_r1: null # OPT - minimum R1 read length. If R1 read is shorter, both R1 and R2 reads are discarded. The fourth step.
+  min_length_r2: null # OPT - minimum R2 read length. If R2 read is shorter, both R1 and R2 reads are discarded. The fourth step.
+  max_length_r1: null # OPT - maximum R1 read length. If R1 read is longer, both R1 and R2 reads are discarded. The fourth step.
+  max_length_r2: null # OPT - maximum R2 read length. If R2 read is longer, both R1 and R2 reads are discarded. The fourth step.
+  max_n_bases: null # OPT - Discard read if R1 or R2 has more than the specified number of N bases. The fifth step.
+  max_expected_errors: null # OPT - Discard read if R1 or R2 has more expected errors than this.
+
+reads__decontamination__kraken:
+  kraken_dir: "path_to_kraken/k2_viral_20230314" # Directory containing kraken DB files. If does not exist, will be downloaded using the dirname.
+  # get KRAKEN_TAG from https://benlangmead.github.io/aws-indexes/k2
   exclude_taxa_ids: # list of taxonomy IDs to exclude.
     - 9606 # Homo Sapiens
   exclude_children: false # Whether to exclude reads classified at more specific levels than specified taxonomy ID levels.
   exclude_ancestors: false # Whether to exclude reads classified at all taxonomy levels between root and the specified taxonomy ID levels.
-
-kraken__params:
   save_memory: true # If true, kraken limits RAM memory usage but sacrifices speed.
 
-spades__params:
+assembly__assembly__spades:
   mode: meta # Default: "standard". Supported values: standard, meta, plasmid, metaplasmid, metaviral, bio, rna, rnaviral.
   careful: False # Default: False. Can not be combined with the meta mode. Tries to reduce number of mismatches and short indels, longer runtime.
 
-quast__params:
+assembly__report__quast:
   min_contig_length: 500 # Default: 500. Minimum length in bp for contigs to be taken into account.
   extra: "" # Optional. Default: "". Provide directly arguments for quast. See https://quast.sourceforge.net/docs/manual.html
 
-blast__querying: # Optional section (set to [] or remove). Here provide multiple dicts, one for each reference.
+assembly__classification__blast: # Optional section (set to [] or remove). Here provide multiple dicts, one for each reference.
   # Use Blast DB tag, allowed: "18S_fungal_sequences" "Betacoronavirus" "ref_viroids_rep_genomes" "ref_viruses_rep_genomes" "refseq_select_rna" "refseq_select_prot" "refseq_protein" "refseq_rna" "16S_ribosomal_RNA" "ITS_RefSeq_Fungi" "28S_fungal_sequences" "ITS_eukaryote_sequences" "LSU_eukaryote_rRNA" "LSU_prokaryote_rRNA" "SSU_eukaryote_rRNA" "env_nt" "env_nr" "human_genome" "landmark" "mito" "mouse_genome" "nr" "nt_euk" "nt" "nt_others" "swissprot" "tsa_nr" "tsa_nt" "taxdb" "nt_prok" "nt_viruses" "pataa" "patnt" "pdbaa" "pdbnt" "ref_euk_rep_genomes" "ref_prok_rep_genomes".
-  - db_dir: "/data/genome/blast/{BLAST_DB_TAG}/{TIMESTAMP}" # where the DB is located or where it will be downloaded.
-    query_vs_db: "nucleotide-nucleotide" # Type of query vs DB sequence (Searching nucleotide in nucleotide DB). Allowed: "nucleotide-nucleotide", "nucleotide-protein", "protein-protein", "protein-nucleotide".
-    max_number_of_hits: 5 # Maximum number of best hits when blast querying an input sequence (default: 5).
-
-blast__report: # Summary reports of classification results
+  db_dir: "/data/genome/blast/{BLAST_DB_TAG}/{TIMESTAMP}" # where the DB is located or where it will be downloaded.
+  query_vs_db: "nucleotide-nucleotide" # Type of query vs DB sequence (Searching nucleotide in nucleotide DB). Allowed: "nucleotide-nucleotide", "nucleotide-protein", "protein-protein", "protein-nucleotide".
+  max_number_of_hits: 5 # Maximum number of best hits when blast querying an input sequence (default: 5).
   max_query_seqs: 2000 # Maximal number of contigs to report, ordered by their length (default: 2000).
   max_target_seqs: 5 # Maximal number of homologues from reference genomes to report (default: 5).
   min_query_coverage: 0.01 # Show only hits that have at least this proportion of contig mapped to reference (default: 0.01).
@@ -48,16 +83,16 @@ max_threads: 16
 max_mem_mb: 128000
 
 resources:
-  trimming_mem_mb: 4096
-  fastqc_mem_mb: 2048
-  spades_mem_mb: 64000
-  blast_mem_mb: 32000
+  reads__trimming_mem_mb: 4096
+  reads__fastqc_mem_mb: 2048
+  assembly__assembly_mem_mb: 64000
+  assembly__classification_mem_mb: 32000
 
 threads:
-  trimming: 4
-  fastqc: 1
-  deduplication: 4
-  kraken: 8
-  spades: 16
-  quast: 4
-  blast: 8
+  reads__trimming: 4
+  reads__fastqc: 1
+  reads__deduplication: 4
+  reads__decontamination: 8
+  assembly__assembly: 16
+  assembly__classification: 8
+  assembly__report: 2
