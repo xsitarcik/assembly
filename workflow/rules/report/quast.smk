@@ -19,4 +19,4 @@ rule quast__evaluate_assembly:
     params:
         extra=get_quast_params(),
     wrapper:
-        "v3.5.0/bio/quast"
+        "v3.3.5/bio/quast"
