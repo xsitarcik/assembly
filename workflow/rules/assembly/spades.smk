@@ -1,6 +1,6 @@
 rule spades__assemble_reads_into_contigs:
     input:
-        get_fastq_for_assembly,
+        unpack(get_fastq_for_assembly),
     output:
         fastg="results/assembly/{sample}/spades/assembly_graph.fastg",
         gfa="results/assembly/{sample}/spades/assembly_graph_with_scaffolds.gfa",
