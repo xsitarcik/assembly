@@ -3,24 +3,28 @@ from snakemake.utils import min_version
 min_version("7.25.0")
 
 
-localrules:
-    all,
-    curl__download_kraken_db,
-    krona__update_taxonomy,
-
-
 include: "rules/common.smk"
-include: "rules/reads.smk"
-include: "rules/kraken.smk"
-include: "rules/assembly.smk"
-include: "rules/blast.smk"
-include: "rules/blast_report.smk"
 
 
-wildcard_constraints:
-    **get_constraints(),
+module reads_workflow:
+    snakefile:
+        github("xsitarcik/reads", path="workflow/Snakefile", tag="v3.1.0")
+    config:
+        config
+
+
+use rule * from reads_workflow as reads_*
+
+
+for field in ["assembly", "classification", "report"]:
+    for tool in config["assembly"][field]:
+
+        include: f"rules/{field}/{tool}.smk"
 
 
 rule all:
     input:
+        **reads_workflow.get_outputs(),
         **get_outputs(),
+    default_target: True
+    localrule: True
