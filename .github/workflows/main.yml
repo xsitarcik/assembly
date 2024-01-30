@@ -10,9 +10,9 @@ jobs:
   Formatting:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Formatting
-        uses: github/super-linter@v4
+        uses: github/super-linter@v5
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
@@ -22,9 +22,9 @@ jobs:
   Linting:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Lint workflow
-        uses: snakemake/snakemake-github-action@v1.25.1
+        uses: xsitarcik/snakemake-github-action@v1.25.1
         with:
           directory: .tests
           snakefile: workflow/Snakefile
@@ -37,10 +37,10 @@ jobs:
       - Linting
       - Formatting
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@v1.3.0
+        uses: jlumbroso/free-disk-space@v1.3.1
         with:
           tool-cache: false
           android: true
@@ -51,7 +51,7 @@ jobs:
           swap-storage: true
 
       - name: Test workflow
-        uses: snakemake/snakemake-github-action@v1.25.1
+        uses: xsitarcik/snakemake-github-action@v1.25.1
         with:
           directory: .tests
           snakefile: workflow/Snakefile
@@ -60,7 +60,7 @@ jobs:
           show-disk-usage-on-error: true
 
       - name: Test report
-        uses: snakemake/snakemake-github-action@v1.25.1
+        uses: xsitarcik/snakemake-github-action@v1.25.1
         with:
           directory: .tests
           snakefile: workflow/Snakefile
