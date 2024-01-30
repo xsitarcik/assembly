@@ -17,7 +17,7 @@ def build_report(
     *,
     html_template: str,
     fasta: str,
-    blast_files: list[str],
+    blast_file: str,
     seqinfo: str,
     max_query_seqs: int,
     output_tsv: str,
@@ -28,7 +28,7 @@ def build_report(
     sort_how: str,
     seqs_per_page: int,
 ):
-    attr_files = blast_files + [seqinfo]
+    attr_files = [blast_file] + [seqinfo]
     attr_names = [os.path.basename(f)[:-4] for f in attr_files]
     attr_tables = [load_attrs(attr_file) for attr_file in attr_files]
 
@@ -74,7 +74,7 @@ if __name__ == "__main__":
     build_report(
         html_template=snakemake.input.template,
         fasta=snakemake.params.fasta,
-        blast_files=snakemake.input.attrs_blast,
+        blast_file=snakemake.input.attrs_blast,
         seqinfo=snakemake.input.attrs_seqinfo,
         max_query_seqs=snakemake.params.max_query_seqs,
         seqs_per_page=snakemake.params.seqs_per_page,
