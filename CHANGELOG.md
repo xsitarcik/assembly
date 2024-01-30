@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/xsitarcik/assembly/compare/v1.0.0...v2.0.0) (2024-01-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* modularity of assemblers
+
+### Features
+
+* modularity of assemblers ([ca7507e](https://github.com/xsitarcik/assembly/commit/ca7507eb7d4517b0adae679ce94a2ecece71d8d0))
+
 ## 1.0.0 (2023-12-03)
 
 
