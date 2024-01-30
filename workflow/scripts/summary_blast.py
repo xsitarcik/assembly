@@ -8,7 +8,6 @@ def summary_blast(
     blast_tsv: str,
     min_query_coverage: float,
     max_target_seqs: int,
-    reference: str,
     output_tsv: str,
 ):
     seqids, info_list = [], []
@@ -34,9 +33,9 @@ def summary_blast(
         seqids.append(seqid)
         info_list.append(
             {
-                "Homologue title (%s)" % reference: ";".join(aligns["stitle"]),
-                "Homologue accession (%s)" % reference: ";".join(aligns["stitle"]),
-                "Homologue link (%s)" % reference: "<br />".join(aligns.apply(create_link, axis=1)),
+                "Homologue title": ";".join(aligns["stitle"]),
+                "Homologue accession": ";".join(aligns["stitle"]),
+                "Homologue link": "<br />".join(aligns.apply(create_link, axis=1)),
             }
         )
 
@@ -51,6 +50,5 @@ if __name__ == "__main__":
         snakemake.input.tsv,
         snakemake.params.min_query_coverage,
         snakemake.params.max_target_seqs,
-        snakemake.wildcards.reference_tag,
         snakemake.output.tsv,
     )
