@@ -2,6 +2,7 @@
 
 [![Snakemake](https://img.shields.io/badge/snakemake-≥7.25.0-brightgreen.svg)](https://snakemake.github.io)
 [![Tests](https://github.com/xsitarcik/assembly/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/xsitarcik/assembly/actions/workflows/main.yml?branch=main)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
 
 Snakemake workflow for assembly
 
