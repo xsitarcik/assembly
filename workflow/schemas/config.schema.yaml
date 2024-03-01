@@ -206,30 +206,36 @@ definitions:
         description: "Number of table rows (sequences) per page."
     title: BlastReportParams
   Resources:
-    assembly__assembly_mem_mb:
-      type: integer
-      description: "Memory in MB to reserve for assembly"
-      default: 2048
-    assembly__classification_mem_mb:
-      type: integer
-      description: "Memory in MB to reserve for classification"
-      default: 2048
+    type: object
+    additionalProperties: true
+    properties:
+      assembly__assembly_mem_mb:
+        type: integer
+        description: "Memory in MB to reserve for assembly"
+        default: 2048
+      assembly__classification_mem_mb:
+        type: integer
+        description: "Memory in MB to reserve for classification"
+        default: 2048
     title: Resources
     required:
       - assembly__assembly_mem_mb
   Threads:
-    assembly__assembly:
-      type: integer
-      default: 1
-      description: "Number of threads to use for assembly"
-    assembly__classification:
-      type: integer
-      default: 1
-      description: "Number of threads to use for classification"
-    assembly__report:
-      type: integer
-      default: 1
-      description: "Number of threads to use for reporting"
+    type: object
+    additionalProperties: true
+    properties:
+      assembly__assembly:
+        type: integer
+        default: 1
+        description: "Number of threads to use for assembly"
+      assembly__classification:
+        type: integer
+        default: 1
+        description: "Number of threads to use for classification"
+      assembly__report:
+        type: integer
+        default: 1
+        description: "Number of threads to use for reporting"
     title: Threads
     required:
       - assembly__assembly
