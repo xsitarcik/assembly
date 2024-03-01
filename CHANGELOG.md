@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/xsitarcik/assembly/compare/v2.0.0...v2.0.1) (2024-03-01)
+
+
+### Bug Fixes
+
+* fixed schema for resources and threads ([7e1ec87](https://github.com/xsitarcik/assembly/commit/7e1ec87453f9c33a7fe7948f6b6b38c3b77904b6))
+
 ## [2.0.0](https://github.com/xsitarcik/assembly/compare/v1.0.0...v2.0.0) (2024-01-30)
 
 
