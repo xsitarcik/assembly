@@ -31,6 +31,9 @@ definitions:
       threads:
         type: object
         "$ref": "#/definitions/Threads"
+      module_versions:
+        type: object
+        "$ref": "#/definitions/ModuleVersions"
     required:
       - resources
       - threads
@@ -239,3 +242,15 @@ definitions:
     title: Threads
     required:
       - assembly__assembly
+  ModuleVersions:
+    type: object
+    additionalProperties: true
+    properties:
+      reads:
+        type: string
+        default: 1
+        pattern: "v[0-9]+.[0-9]+.[0-9]+"
+        description: "Version of reads module"
+    title: ModuleVersions
+    required:
+      - reads

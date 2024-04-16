@@ -75,3 +75,6 @@ threads:
   assembly__assembly: 16
   assembly__classification: 8
   assembly__report: 2
+
+module_versions:
+  reads: "v3.2.1"
