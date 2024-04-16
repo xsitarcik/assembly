@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/xsitarcik/assembly/compare/v2.0.1...v2.1.0) (2024-04-16)
+
+
+### Features
+
+* added module versions configurable ([1e1efc7](https://github.com/xsitarcik/assembly/commit/1e1efc7cdd7b3c650717c0a07693f35d9cfacf4e))
+
 ## [2.0.1](https://github.com/xsitarcik/assembly/compare/v2.0.0...v2.0.1) (2024-03-01)
 
 
